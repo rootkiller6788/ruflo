@@ -32,7 +32,8 @@ Key flags (see `REFERENCE.md`):
 - `--threshold <0-100>` — fail when aggregate slop exceeds this (default `40`)
 - `--json` — machine-readable JSON to stdout (for CI)
 - `--verbose` — per-file check breakdown
-- `--ignore <dirs>` — comma-separated extra dirs to skip (default: `node_modules,.git,dist,build`)
+- `--ignore <dirs>` — comma-separated extra dirs to skip (default: `node_modules,.git,dist,build,coverage,.next,.turbo,vendor`)
+- `--include-tests` — also scan test/spec files and dirs (skipped by default to avoid fixture false positives)
 
 Exit codes:
 

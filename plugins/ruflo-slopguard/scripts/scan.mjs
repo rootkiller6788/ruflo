@@ -8,7 +8,8 @@
 //
 // CLI:
 //   node scan.mjs --dir . --threshold 40 [--json] [--verbose] [--ignore a,b]
-//                 [--ext ts,js,py] [--badge-out BADGE.md] [--out report.json]
+//                 [--ext ts,js,py] [--include-tests] [--badge-out BADGE.md]
+//                 [--out report.json]
 //
 // Exit codes: 0 = pass (aggregate slop <= threshold), 1 = gate failed,
 //             2 = usage error.
@@ -21,7 +22,11 @@ export const FILLER = new Set([
 ]);
 
 const DEFAULT_EXT = ['ts', 'tsx', 'js', 'jsx', 'mjs', 'cjs', 'py'];
-const DEFAULT_IGNORE = ['node_modules', '.git', 'dist', 'build'];
+// Generated / vendor dirs are always noise — never scanned, not even with
+// --include-tests. Test code is handled separately (see TEST_*_RE below).
+const DEFAULT_IGNORE = ['node_modules', '.git', 'dist', 'build', 'coverage', '.next', '.turbo', 'vendor'];
+const TEST_FILE_RE = /\.(test|spec)\.[^.]+$/;
+const TEST_DIR_RE = /(^|[\\/])(__tests__|__mocks__|test|tests|spec)([\\/]|$)/;
 
 // ---------- tokenization helpers ----------
 
@@ -230,14 +235,14 @@ export function decide(aggregateSlop, threshold) {
 
 function usageError(msg) {
   console.error(`slopguard: ${msg}`);
-  console.error('usage: node scan.mjs --dir <path> [--threshold <0-100>] [--json] [--verbose] [--ignore a,b] [--ext ts,js] [--badge-out FILE] [--out FILE]');
+  console.error('usage: node scan.mjs --dir <path> [--threshold <0-100>] [--json] [--verbose] [--ignore a,b] [--ext ts,js] [--include-tests] [--badge-out FILE] [--out FILE]');
   process.exit(2);
 }
 
 function parseArgs(argv) {
   const args = {
     dir: '.', threshold: 40, json: false, verbose: false,
-    ignore: [], ext: DEFAULT_EXT, badgeOut: null, out: null,
+    ignore: [], ext: DEFAULT_EXT, badgeOut: null, out: null, includeTests: false,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -250,6 +255,7 @@ function parseArgs(argv) {
     else if (a === '--ext') args.ext = next().split(',').map((s) => s.trim().replace(/^\./, '')).filter(Boolean);
     else if (a === '--badge-out') args.badgeOut = next();
     else if (a === '--out') args.out = next();
+    else if (a === '--include-tests') args.includeTests = true;
     else if (a.startsWith('--')) usageError(`unknown flag: ${a}`);
     else usageError(`unexpected positional arg: ${a}`);
   }
@@ -259,7 +265,7 @@ function parseArgs(argv) {
   return args;
 }
 
-function walk(dir, ignore, exts, out) {
+function walk(dir, ignore, exts, includeTests, out) {
   let entries;
   try {
     entries = readdirSync(dir, { withFileTypes: true });
@@ -270,8 +276,11 @@ function walk(dir, ignore, exts, out) {
     const full = join(dir, e.name);
     if (e.isDirectory()) {
       if (ignore.has(e.name)) continue;
-      walk(full, ignore, exts, out);
+      walk(full, ignore, exts, includeTests, out);
     } else if (e.isFile() && exts.has(extname(e.name).slice(1).toLowerCase())) {
+      // Test code is skipped by default (fixtures trigger false positives on
+      // the bloat rule); --include-tests re-admits it.
+      if (!includeTests && (TEST_FILE_RE.test(e.name) || TEST_DIR_RE.test(full))) continue;
       out.push(full);
     }
   }
@@ -283,7 +292,7 @@ function main() {
   const ignore = new Set([...DEFAULT_IGNORE, ...args.ignore]);
   const exts = new Set(args.ext);
 
-  const files = walk(args.dir, ignore, exts, []);
+  const files = walk(args.dir, ignore, exts, args.includeTests, []);
   const results = [];
   for (const file of files) {
     let content;
@@ -294,7 +303,7 @@ function main() {
     }
     const r = scanFile(content, file);
     results.push({
-      path: relative(process.cwd(), file),
+      path: relative(process.cwd(), file).replace(/\\/g, '/'),
       lines: r.details.codeLines,
       slop: r.slop,
       checks: r.checks,
