@@ -1,5 +1,7 @@
 # ruflo-slopguard
 
+![SlopGuard: 91/100](https://img.shields.io/badge/slop-91%2F100-brightgreen)
+
 **Anti-slop quality gate for AI-generated code.** Statically score how much
 low-substance filler lives in your codebase — echo comments, filler
 identifiers, duplicate boilerplate, unused imports — and fail CI when the

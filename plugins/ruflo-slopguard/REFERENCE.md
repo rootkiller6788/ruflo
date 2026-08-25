@@ -14,8 +14,9 @@ node plugins/ruflo-slopguard/scripts/scan.mjs [flags]
 | `--threshold <0-100>` | `40` | Exit 1 when aggregate slop > threshold |
 | `--json` | off | Emit a single JSON document to stdout (no human table) |
 | `--verbose` | off | Per-file check breakdown |
-| `--ignore <dirs>` | `node_modules,.git,dist,build` | Extra directories to skip (comma-separated) |
+| `--ignore <dirs>` | `node_modules,.git,dist,build,coverage,.next,.turbo,vendor` | Extra directories to skip (comma-separated) |
 | `--ext <list>` | `ts,tsx,js,jsx,mjs,cjs,py` | File extensions to scan |
+| `--include-tests` | off | Also scan `*.test.*` / `*.spec.*` files and files under `test`/`__tests__`/`spec` dirs (skipped by default) |
 | `--badge-out <path>` | — | Write a self-contained markdown badge |
 | `--out <path>` | — | Write the JSON report to a file (used by `report`) |
 
