@@ -1,0 +1,24 @@
+{
+  "name": "ruflo-todo-debt",
+  "description": "Tech-debt marker gate — statically scan code for TODO / FIXME / HACK / XXX / TEMP markers, weight them by severity, and fail CI when the aggregate debt exceeds a threshold. Zero dependencies, works offline, cross-platform.",
+  "version": "0.1.0",
+  "author": {
+    "name": "rootkiller6788",
+    "url": "https://github.com/rootkiller6788"
+  },
+  "homepage": "https://github.com/rootkiller6788/ruflo",
+  "license": "MIT",
+  "keywords": [
+    "ruflo",
+    "todo",
+    "fixme",
+    "tech-debt",
+    "debt",
+    "code-health",
+    "refactor",
+    "static-analysis",
+    "gate",
+    "ci",
+    "claude-code"
+  ]
+}
