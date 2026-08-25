@@ -52,6 +52,7 @@ claude $(ls -d plugins/ruflo-*/ | sed 's|^|--plugin-dir |' | tr '\n' ' ')
 | [ruflo-aidefence](ruflo-aidefence/) | Prompt injection detection, PII scanning |
 | [ruflo-testgen](ruflo-testgen/) | Test gap detection, TDD London School workflow |
 | [ruflo-browser](ruflo-browser/) | Playwright browser automation and testing |
+| [ruflo-slopguard](ruflo-slopguard/) | Anti-slop quality gate — score AI-generated code 0-100, CI-runnable |
 
 ### Development Tools
 

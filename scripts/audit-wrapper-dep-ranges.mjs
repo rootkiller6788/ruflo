@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// EXPERIMENT (fork harness): harmless marker — zero-risk delta-layer edit demo.
+// Revert anytime with: git checkout HEAD -- scripts/audit-wrapper-dep-ranges.mjs
 /**
  * Static guard for ruvnet/ruflo#2127 (and the family of #1147 / #2018).
  *

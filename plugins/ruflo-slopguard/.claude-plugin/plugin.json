@@ -1,0 +1,24 @@
+{
+  "name": "ruflo-slopguard",
+  "description": "Anti-slop quality gate — statically scan code for low-substance AI-generated patterns (echo comments, filler identifiers, duplicate-block bloat, unused imports) and score 0-100 per file, with a CI-runnable fail-above threshold. Zero dependencies, works offline, cross-platform.",
+  "version": "0.1.0",
+  "author": {
+    "name": "rootkiller6788",
+    "url": "https://github.com/rootkiller6788"
+  },
+  "homepage": "https://github.com/rootkiller6788/ruflo",
+  "license": "MIT",
+  "keywords": [
+    "ruflo",
+    "slop",
+    "anti-slop",
+    "quality",
+    "code-quality",
+    "code-review",
+    "ai-generated",
+    "static-analysis",
+    "gate",
+    "ci",
+    "claude-code"
+  ]
+}
